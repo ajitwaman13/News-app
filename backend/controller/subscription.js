@@ -3,6 +3,7 @@ import { statusCodes } from "../utils/statusCode.js";
 
 export const upgrade_User = async (req, res) => {
   try {
+    console.log("hit the backend api...");
     // const userId = req.user._id;
     const userId = req.userId;
     // prime
@@ -38,6 +39,7 @@ export const upgrade_User = async (req, res) => {
 export const CheckPrimeStatus = async (req, res) => {
   try {
     const UserID = req.userId;
+    console.log("hit the backend api check prime ");
     if (!UserID) {
       return res
         .status(statusCodes.BAD_REQUEST)

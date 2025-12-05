@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
@@ -14,11 +15,14 @@ export default function HomeScreen() {
   const router = useRouter();
   const [userName, setUserName] = useState("Guest");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isPrime, setIsPrime] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
-  });
+    checkPrimeStatus();
+  }, []);
 
+  // Check logged in user
   const checkLoginStatus = async () => {
     const token = await SecureStore.getItemAsync("token");
 
@@ -37,6 +41,16 @@ export default function HomeScreen() {
       await SecureStore.deleteItemAsync("token");
       setIsLoggedIn(false);
       setUserName("Guest");
+    }
+  };
+
+  const checkPrimeStatus = async () => {
+    try {
+      const res = await api.get("/api/user/prime/status");
+      setIsPrime(res.data.isPrime);
+      console.log("Prime status:", res.data.isPrime);
+    } catch (error) {
+      console.log("Prime status error:", error);
     }
   };
 
@@ -65,32 +79,21 @@ export default function HomeScreen() {
       >
         <Text style={styles.buttonText}>Read Latest News</Text>
       </TouchableOpacity>
-      <View
-        style={{
-          width: 300,
-          padding: 30,
-          justifyContent: "center",
-          alignItems: "center",
-          marginLeft: 24,
-          height: 150,
-          backgroundColor: "black",
-          borderRadius: 10,
-        }}
-      >
-        <Text style={{ color: "white", marginBottom: 10 }}>Add showing</Text>
 
-        <TouchableOpacity
-          style={{
-            backgroundColor: "gold",
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-          }}
-          onPress={() => router.push("/subscription")}
-        >
-          <Text style={{ fontWeight: "700" }}>Remove Ads • Go Prime</Text>
-        </TouchableOpacity>
-      </View>
+      {!isPrime && (
+        <View style={styles.adBox}>
+          <Text style={{ color: "white", marginBottom: 10 }}>
+            Advertisement
+          </Text>
+
+          <TouchableOpacity
+            style={styles.primeButton}
+            onPress={() => router.push("/subscription")}
+          >
+            <Text style={{ fontWeight: "700" }}>Remove Ads • Go Prime</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Top Categories</Text>
@@ -154,6 +157,22 @@ const styles = StyleSheet.create({
     color: "#BC291D",
     fontSize: 17,
     fontWeight: "600",
+  },
+  adBox: {
+    width: 300,
+    padding: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 24,
+    height: 150,
+    backgroundColor: "black",
+    borderRadius: 10,
+  },
+  primeButton: {
+    backgroundColor: "gold",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
   section: {
     marginTop: 10,

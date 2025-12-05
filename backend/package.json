@@ -2,10 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
   "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test",
+    "test:coverage": "c8 --reporter=text --reporter=html node --test"
+  },
   "dependencies": {
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
@@ -14,5 +16,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3",
     "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "c8": "^9.0.0"
   }
 }
