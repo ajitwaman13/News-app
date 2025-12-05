@@ -25,8 +25,11 @@ export default function SubscriptionScreen() {
     }
 
     try {
-      await api.post("/api/user/upgrade");
-      alert("You are now a Prime user! 🎉");
+      await api.post("/api/user/upgrade", {
+        isPrime: "true",
+      });
+
+      alert("You are now a Prime user! ");
       router.replace("/");
     } catch (error) {
       console.log(error);
